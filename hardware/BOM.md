@@ -13,4 +13,3 @@ This document lists the core hardware components for the low-power, miniaturized
 | Tx Antenna | Diamond_WD330 broadband HF dipole antenna |
 | Rx Antenna | ALA1530 magnetic loop antenna |
 | Rx Filter | MFJ-702B |
-| Calibration Path | Closed-loop reflected power monitoring (SWR) via directional coupler |
