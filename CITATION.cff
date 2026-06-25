@@ -1,0 +1,16 @@
+cff-version: 1.3.0
+message: "If you use this software, please cite it as below."
+title: "Low-Power Miniaturized Coded Continuous Wave (CCW) Vertical Ionosonde Based on SDR"
+authors:
+  - family-names: "Fang"
+    given-names: "Zhe"
+  - family-names: "Vierinen"
+    given-names: "Juha"
+    affiliation: "Original Framework Author"
+version: "1.0.0"
+date-released: "2026-06-25"
+url: "https://github.com/FZ-Krystal/CCW_Ionosonde"
+repository-code: "https://github.com/FZ-Krystal/CCW_Ionosonde"
+description: >-
+  A low-power, miniaturized Coded Continuous Wave (CCW) vertical ionospheric sounding system based on the Software-Defined Radio (SDR) architecture.
+license: GPL-3.0-or-later

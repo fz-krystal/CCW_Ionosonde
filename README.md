@@ -1,61 +1,50 @@
-# Software defined radio ionosonde 
+# Low-Power Miniaturized Coded Continuous Wave (CCW) Vertical Ionosonde Based on SDR
+(Software Defined Radio Ionosonde)
 
-(c) 2012-2025 Juha Vierinen, Markus Floer, Mikko Syrjäsuo, Peje Nilsson
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx)
 
-This setup of scripts implements a frequency hopping radar. The primary use of this software is for sounding the ionosphere with HF radio waves in the range of frequencies that correspond to plasma-frequencies encountered in the ionosphere. This type of a radar is also called an ionosonde when used to sound the ionosphere. The software can be used for both vertical and oblique sounding, and it is designed to be suitable for building a multi-static network of ionospheric sounders with multiple transmitters and receivers. It is also possible to use the program for single frequency range-Doppler sounding, for e.g., studies of thermospheric gravity waves.  
+## Project Overview
 
-The software is written purely in Python and it relies on the Ettus Research USRP Hardware Driver library to generate and receive radio signals. The ionosonde uses pseudorandom phase coded transmit waveforms with arbitrary duty-cycle. This means that both pulsed and continuous-wave transmit waveforms are supported. The software relies on GPS to keep the transmitter and receiver time synchronous, which allows the transmitter and receiver to be located in different places. It is therefore easy to also have multiple oblique receivers listening the the same transmitter. The software does not require internet to operate, which makes it possible to operate receivers and transmitters with very low infrastructure. 
+We propose and develop a low-power, miniaturized Coded Continuous Wave (CCW) vertical ionospheric sounding system based on the Software-Defined Radio (SDR) architecture. This system relies on the core digital signal processing architecture of the open-source project ([jvierine/ionosonde](https://github.com/jvierine/ionosonde)) and is optimized and developed for mid-latitude ionospheric sounding requirements.
 
-On receive, a range-Doppler spectrum of the received echoes is estimated and an ionogram is produced using the configured frequency sweep. 
+The system utilizes long-code Pseudo-Random Noise (PRN) sequences for phase modulation combined with pulse compression technology to achieve high processing gain, which significantly improves the detection capability of weak signals. The system supports both vertical and oblique sounding and can be easily scaled into a multi-static ionospheric sounding network.
 
-The software is released under the GPL 3.0 license. 
+## Directory Structure
 
-Markus Floer's thesis includes a description of building a software defined ionosonde:
+To keep the project structure clean and maintainable, this repository is organized as follows:
 
-https://munin.uit.no/handle/10037/19423
+- `src/`: Core Python source code and execution scripts (TX/RX control and signal analysis).
+- `docs/`: Detailed documentation of the overall system architecture, software logic, and hardware implementation.
+- `hardware/`: Contains the system's Bill of Materials (BOM) and hardware connection block diagrams.
+- `figures/`: Stores experimental results and sample ionograms.
+- `config/`: Various runtime configuration files for the system.
 
-## A software defined ionosonde at the polar cap
+## Hardware & BOM
 
-The first prototype system has been deployed on the island of Svalbard as being operated by the UNIS (University Center of Svalbard) to study the occurrence of polar cap sporadic E. Here is a <a href="http://kho.unis.no/Ionosonde/">link</a> to the latest soundings. The ionosonde operates with a sparse set of frequencies due to frequency licensing limitations. 
+This system utilizes independent transmit (TX) and receive (RX) chains, incorporating a bidirectional coupler to achieve safe VSWR monitoring. 
+For a detailed description of the system architecture, please refer to: [docs/system_implementation.md](docs/system_implementation.md)
 
-## Hardware
+**For the core Hardware Bill of Materials (BOM), please refer to:** [hardware/BOM.md](hardware/BOM.md)
 
-The software relies on USRP N2x0 software defined radio hardware. The minimum requirement is:
-- Ettus Research USRP N2x0 + internal GPSDO with BasicRX or LFRX daughterboard for receiving
-- Ettus Research USRP N2x0 + internal GPSDO with BasicRX or LFRX daughterboard for receiving and BasicTX or LFTX daugherboard of transmitting. The receiver card on the transmitter can be used to measure reflected or transmitted power using a directional coupler.
-- We rely on the internal Ettus Research GPSDO and use the UHD commands to interface with the GPSDO. It is possible to use another make of GPS clock, but you'll need to come up with an alternative interface to check for GPS lock. 
-- You choice of transmit and receiver antennas, and associated RF plumbing. An example is shown below.
-- PC - You can run the transmit and receive programs on the same computer. If the transmitter and receiver are in different locations, you'll need two PCs.The receiver signal processing is not extremely demanding, and should work with a 10+ year old entry level CPU.  
+## System Requirements
 
-![Example implementation](figures/rf_block_diagram.png)
+The SDR control framework is built on Linux and standard scientific computing stacks. 
 
-## Software dependencies
+- **Operating System**: Linux-based OS (Ubuntu 24.04 or later is recommended).
+- **RF Driver**: Ettus Research UHD (USRP Hardware Driver) version 4.x.
+- **Python Environment**: Python 3.10+ with standard scientific libraries (`numpy`, `scipy`, `matplotlib`, etc.).
 
-- Requires Linux. We've tested the program using Ubuntu 18.04 LTS. It should be possible to adapt the code relatively easily to any operating system and platform that supports Python.  
-- Requires UHD Library 3.15. The UHD library needs to be compiled with the Python API enabled. 
-- Numpy, Matplotlib, Scipy, Psutil
+## Deployment & Configuration Guidelines
 
-## Installation Instructions
+To successfully run the SDR ionosonde, please ensure the following system-level configurations are met:
 
-Installing UHD 3.15 with Python API enabled
+1. **Network Configuration**: Ensure the host computer and the USRP device are directly connected via a Gigabit Ethernet interface. Configure the host computer with a compatible static IP subnet corresponding to your USRP default address.
+2. **Buffer Optimization**: To support high-rate continuous data streams and prevent buffer overflow/underrun errors (such as `O` or `U` errors), it is highly recommended to increase the kernel network buffer sizes (e.g., tuning `net.core.rmem_max` and `net.core.wmem_max`).
+3. **Dependencies Installation**: Ensure all required core libraries and Python dependencies (such as `numpy`, `scipy`, `matplotlib`, `h5py`, `psutil`, and the `uhd` Python API) are installed via your system's package manager (e.g., `apt`) or `pip`.
 
-> sudo apt-get install libopenblas-dev python3-matplotlib python3-psutil python3-h5py python3-setuptools
-> sudo apt-get -y install git swig cmake doxygen build-essential libboost-all-dev libtool libusb-1.0-0 libusb-1.0-0-dev libudev-dev libncurses5-dev libfftw3-bin libfftw3-dev libfftw3-doc libcppunit-1.14-0 libcppunit-dev libcppunit-doc ncurses-bin cpufrequtils python-numpy python-numpy-doc python-numpy-dbg python-scipy python-docutils qt4-bin-dbg qt4-default qt4-doc libqt4-dev libqt4-dev-bin python-qt4 python-qt4-dbg python-qt4-dev python-qt4-doc python-qt4-doc libqwt6abi1 libfftw3-bin libfftw3-dev libfftw3-doc ncurses-bin libncurses5 libncurses5-dev libncurses5-dbg libfontconfig1-dev libxrender-dev libpulse-dev swig g++ automake autoconf libtool python-dev libfftw3-dev libcppunit-dev libboost-all-dev libusb-dev libusb-1.0-0-dev fort77 libsdl1.2-dev python-wxgtk3.0 git libqt4-dev python-numpy ccache python-opengl libgsl-dev python-cheetah python-mako python-lxml doxygen qt4-default qt4-dev-tools libusb-1.0-0-dev libqwtplot3d-qt5-dev pyqt4-dev-tools python-qwt5-qt4 cmake git wget libxi-dev gtk2-engines-pixbuf r-base-dev python-tk liborc-0.4-0 liborc-0.4-dev libasound2-dev python-gtk2 libzmq3-dev libzmq5 python-requests python-sphinx libcomedi-dev python-zmq libqwt-dev libqwt6abi1 python-six libgps-dev libgps23 gpsd gpsd-clients python-gps python-setuptools
+## Citation & License
 
-> wget https://github.com/EttusResearch/uhd/archive/v3.15.0.0.tar.gz
+This software is released under the **GNU General Public License v3.0 (GPL-3.0)**. 
+Original framework attribution: (c) 2012-2025 Juha Vierinen, Markus Floer, Mikko Syrjäsuo, Peje Nilsson.
 
-> tar xvfz v3.15.0.0.tar.gz
-
-> cd uhd
-
-> cd host
-
-> mkdir build
-
-> cd build
-
-> cmake -DENABLE_PYTHON_API=ON ../
-
-> make 
-
-> sudo make install
+If you use this software or hardware architecture design in your research, please cite the Zenodo DOI of this project. You can also refer to the `CITATION.cff` file for the exact citation format.

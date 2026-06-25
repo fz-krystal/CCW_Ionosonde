@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=gnome-terminal --working-directory=/home/markus/j/ionosonde --command "bash start_rx.sh" 
+Exec=gnome-terminal --working-directory='/home/ubuntu/ionosonde(for 24.04)/src' --command "bash start_rx.sh" 
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
